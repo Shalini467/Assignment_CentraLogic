@@ -1,126 +1,120 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+using System;
+using System.Collections.Generic;
 
-public class TaskListApp {
-    static List<Task> tasks = new ArrayList<>();
-    static Scanner scanner = new Scanner(System.in);
+namespace TaskListApp
+{
+    class Program
+    {
+        static List<Task> tasks = new List<Task>();
 
-    public static void main(String[] args) {
-        boolean running = true;
+        static void Main(string[] args)
+        {
+            bool running = true;
 
-        while (running) {
-            System.out.println("Task List Application");
-            System.out.println("1. Create a task");
-            System.out.println("2. Read tasks");
-            System.out.println("3. Update a task");
-            System.out.println("4. Delete a task");
-            System.out.println("5. Exit");
-            System.out.print("Choose an option: ");
-            String choice = scanner.nextLine();
+            while (running)
+            {
+                Console.WriteLine("Task List Application");
+                Console.WriteLine("1. Create a task");
+                Console.WriteLine("2. Read tasks");
+                Console.WriteLine("3. Update a task");
+                Console.WriteLine("4. Delete a task");
+                Console.WriteLine("5. Exit");
+                Console.Write("Choose an option: ");
+                string choice = Console.ReadLine();
 
-            switch (choice) {
-                case "1":
-                    createTask();
-                    break;
-                case "2":
-                    readTasks();
-                    break;
-                case "3":
-                    updateTask();
-                    break;
-                case "4":
-                    deleteTask();
-                    break;
-                case "5":
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Invalid choice, please try again.");
-                    break;
+                switch (choice)
+                {
+                    case "1":
+                        CreateTask();
+                        break;
+                    case "2":
+                        ReadTasks();
+                        break;
+                    case "3":
+                        UpdateTask();
+                        break;
+                    case "4":
+                        DeleteTask();
+                        break;
+                    case "5":
+                        running = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice, please try again.");
+                        break;
+                }
+            }
+        }
+
+        static void CreateTask()
+        {
+            Console.Write("Enter task title: ");
+            string title = Console.ReadLine();
+            Console.Write("Enter task description: ");
+            string description = Console.ReadLine();
+
+            Task newTask = new Task { Title = title, Description = description };
+            tasks.Add(newTask);
+
+            Console.WriteLine("Task created successfully.");
+        }
+
+        static void ReadTasks()
+        {
+            Console.WriteLine("Tasks:");
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. Title: {tasks[i].Title}, Description: {tasks[i].Description}");
+            }
+        }
+
+        static void UpdateTask()
+        {
+            Console.Write("Enter the task number to update: ");
+            if (int.TryParse(Console.ReadLine(), out int taskNumber) && taskNumber > 0 && taskNumber <= tasks.Count)
+            {
+                Task taskToUpdate = tasks[taskNumber - 1];
+
+                Console.Write("Enter new title (leave blank to keep current): ");
+                string newTitle = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newTitle))
+                {
+                    taskToUpdate.Title = newTitle;
+                }
+
+                Console.Write("Enter new description (leave blank to keep current): ");
+                string newDescription = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newDescription))
+                {
+                    taskToUpdate.Description = newDescription;
+                }
+
+                Console.WriteLine("Task updated successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid task number.");
+            }
+        }
+
+        static void DeleteTask()
+        {
+            Console.Write("Enter the task number to delete: ");
+            if (int.TryParse(Console.ReadLine(), out int taskNumber) && taskNumber > 0 && taskNumber <= tasks.Count)
+            {
+                tasks.RemoveAt(taskNumber - 1);
+                Console.WriteLine("Task deleted successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid task number.");
             }
         }
     }
 
-    static void createTask() {
-        System.out.print("Enter task title: ");
-        String title = scanner.nextLine();
-        System.out.print("Enter task description: ");
-        String description = scanner.nextLine();
-
-        Task newTask = new Task(title, description);
-        tasks.add(newTask);
-
-        System.out.println("Task created successfully.");
-    }
-
-    static void readTasks() {
-        System.out.println("Tasks:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + ". Title: " + tasks.get(i).getTitle() + ", Description: " + tasks.get(i).getDescription());
-        }
-    }
-
-    static void updateTask() {
-        System.out.print("Enter the task number to update: ");
-        int taskNumber = Integer.parseInt(scanner.nextLine());
-        
-        if (taskNumber > 0 && taskNumber <= tasks.size()) {
-            Task taskToUpdate = tasks.get(taskNumber - 1);
-
-            System.out.print("Enter new title (leave blank to keep current): ");
-            String newTitle = scanner.nextLine();
-            if (!newTitle.isEmpty()) {
-                taskToUpdate.setTitle(newTitle);
-            }
-
-            System.out.print("Enter new description (leave blank to keep current): ");
-            String newDescription = scanner.nextLine();
-            if (!newDescription.isEmpty()) {
-                taskToUpdate.setDescription(newDescription);
-            }
-
-            System.out.println("Task updated successfully.");
-        } else {
-            System.out.println("Invalid task number.");
-        }
-    }
-
-    static void deleteTask() {
-        System.out.print("Enter the task number to delete: ");
-        int taskNumber = Integer.parseInt(scanner.nextLine());
-        
-        if (taskNumber > 0 && taskNumber <= tasks.size()) {
-            tasks.remove(taskNumber - 1);
-            System.out.println("Task deleted successfully.");
-        } else {
-            System.out.println("Invalid task number.");
-        }
-    }
-}
-
-class Task {
-    private String title;
-    private String description;
-
-    public Task(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    class Task
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
     }
 }
