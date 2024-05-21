@@ -75,21 +75,64 @@ namespace TaskListApp
             {
                 Task taskToUpdate = tasks[taskNumber - 1];
 
-                Console.Write("Enter new title (leave blank to keep current): ");
-                string newTitle = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newTitle))
+                bool updating = true;
+                while (updating)
                 {
-                    taskToUpdate.Title = newTitle;
-                }
+                    Console.WriteLine("What would you like to update?");
+                    Console.WriteLine("1. Title");
+                    Console.WriteLine("2. Description");
+                    Console.WriteLine("3. Both");
+                    Console.WriteLine("4. Cancel");
+                    Console.Write("Choose an option: ");
+                    string updateChoice = Console.ReadLine();
 
-                Console.Write("Enter new description (leave blank to keep current): ");
-                string newDescription = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newDescription))
-                {
-                    taskToUpdate.Description = newDescription;
+                    switch (updateChoice)
+                    {
+                        case "1":
+                            Console.Write("Enter new title: ");
+                            string newTitle = Console.ReadLine();
+                            if (!string.IsNullOrEmpty(newTitle))
+                            {
+                                taskToUpdate.Title = newTitle;
+                                Console.WriteLine("Title updated successfully.");
+                            }
+                            updating = false;
+                            break;
+                        case "2":
+                            Console.Write("Enter new description: ");
+                            string newDescription = Console.ReadLine();
+                            if (!string.IsNullOrEmpty(newDescription))
+                            {
+                                taskToUpdate.Description = newDescription;
+                                Console.WriteLine("Description updated successfully.");
+                            }
+                            updating = false;
+                            break;
+                        case "3":
+                            Console.Write("Enter new title: ");
+                            newTitle = Console.ReadLine();
+                            if (!string.IsNullOrEmpty(newTitle))
+                            {
+                                taskToUpdate.Title = newTitle;
+                            }
+                            Console.Write("Enter new description: ");
+                            newDescription = Console.ReadLine();
+                            if (!string.IsNullOrEmpty(newDescription))
+                            {
+                                taskToUpdate.Description = newDescription;
+                            }
+                            Console.WriteLine("Title and description updated successfully.");
+                            updating = false;
+                            break;
+                        case "4":
+                            updating = false;
+                            Console.WriteLine("Update cancelled.");
+                            break;
+                        default:
+                            Console.WriteLine("Invalid choice, please try again.");
+                            break;
+                    }
                 }
-
-                Console.WriteLine("Task updated successfully.");
             }
             else
             {
