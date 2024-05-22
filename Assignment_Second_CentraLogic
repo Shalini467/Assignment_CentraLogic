@@ -1,0 +1,331 @@
+using System;
+using System.Collections.Generic;
+
+namespace InventoryManagementSystem
+{
+    public class Item
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public double Price { get; set; }
+        public int Quantity { get; set; }
+
+        public Item(int id, string name, double price, int quantity)
+        {
+            ID = id;
+            Name = name;
+            Price = price;
+            Quantity = quantity;
+        }
+        public override string ToString()
+        {
+            return $"ID: {ID}, Name: {Name}, Price: {Price}, Quantity: {Quantity}";
+        }
+    }
+
+    public class Inventory
+    {
+        private List<Item> items = new List<Item>();
+
+        public bool IsIDPresent(int id)
+        {
+            return items.Exists(item => item.ID == id);
+        }
+
+        public void AddItem(Item item)
+        {
+            if (IsIDPresent(item.ID))
+            {
+                Console.WriteLine("Item with this ID already exists. Please add with different ID");
+            }
+            else
+            {
+                items.Add(item);
+                Console.WriteLine("Item added successfully.");
+            }
+        }
+
+        public void DisplayItems()
+        {
+            if (items.Count == 0)
+            {
+                Console.WriteLine("No items in inventory. Please add items");
+            }
+            else
+            {
+                Console.WriteLine("Items inside Inventory:");
+                foreach (var item in items)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+        }
+
+        public Item FindItemByID(int id)
+        {
+            return items.Find(item => item.ID == id);
+        }
+
+        public void UpdateItem(int id, string name = null, double? price = null, int? quantity = null)
+        {
+            Item item = FindItemByID(id);
+            if (item != null)
+            {
+                if (!string.IsNullOrEmpty(name))
+                {
+                    item.Name = name;
+                }
+                if (price.HasValue)
+                {
+                    item.Price = price.Value;
+                }
+                if (quantity.HasValue)
+                {
+                    item.Quantity = quantity.Value;
+                }
+                Console.WriteLine("Item updated successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Item not found.");
+            }
+        }
+
+        public void DeleteItem(int id)
+        {
+            Item item = FindItemByID(id);
+            if (item != null)
+            {
+                items.Remove(item);
+                Console.WriteLine("Item deleted successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Item not found.");
+            }
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Inventory inventory = new Inventory();
+            bool exit = false;
+
+            while (!exit)
+            {
+                try
+                {
+                    Console.WriteLine("\nINVENTORY MANAGEMENT SYSTEM");
+                    Console.WriteLine("1-> ADD NEW ITEM");
+                    Console.WriteLine("2-> DISPLAY ALL ITEMS");
+                    Console.WriteLine("3-> FIND ITEM BY ID");
+                    Console.WriteLine("4-> UPDATE ITEM");
+                    Console.WriteLine("5-> DELETE ITEM");
+                    Console.WriteLine("6-> EXIT");
+                    Console.Write("SELECT AN OPTION: ");
+                    
+                    switch (Console.ReadLine())
+                    {
+                        case "1":
+                            AddNewItem(inventory);
+                            break;
+                        case "2":
+                            inventory.DisplayItems();
+                            break;
+                        case "3":
+                            FindItemByID(inventory);
+                            break;
+                        case "4":
+                            UpdateItem(inventory);
+                            break;
+                        case "5":
+                            DeleteItem(inventory);
+                            break;
+                        case "6":
+                            exit = true;
+                            break;
+                        default:
+                            Console.WriteLine("Invalid option. Please try again.");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred: " + ex.Message);
+                }
+            }
+        }
+
+        static void AddNewItem(Inventory inventory)
+        {
+            try
+            {
+                Console.Write("ENTER ITEM ID: ");
+                if (!int.TryParse(Console.ReadLine(), out int id))
+                {
+                    throw new FormatException("Invalid ID format.");
+                }
+                if (inventory.IsIDPresent(id))
+                {
+                    Console.WriteLine("Item with this ID already exists. Cannot add duplicate ID.");
+                    return;
+                }
+
+                Console.Write("ENTER ITEM NAME: ");
+                string name = Console.ReadLine();
+                Console.Write("ENTER ITEM PRICE: ");
+                if (!double.TryParse(Console.ReadLine(), out double price))
+                {
+                    throw new FormatException("Invalid price format.");
+                }
+                Console.Write("ENTER ITEM QUANTITY: ");
+                if (!int.TryParse(Console.ReadLine(), out int quantity))
+                {
+                    throw new FormatException("Invalid quantity format.");
+                }
+
+                Item newItem = new Item(id, name, price, quantity);
+                inventory.AddItem(newItem);
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+        }
+
+        static void FindItemByID(Inventory inventory)
+        {
+            try
+            {
+                Console.Write("ENTER ITEM ID TO FIND: ");
+                if (!int.TryParse(Console.ReadLine(), out int id))
+                {
+                    throw new FormatException("Invalid ID format.");
+                }
+
+                Item foundItem = inventory.FindItemByID(id);
+                if (foundItem != null)
+                {
+                    Console.WriteLine("Found Item: " + foundItem);
+                }
+                else
+                {
+                    Console.WriteLine("Item not found.");
+                }
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+        }
+
+        static void UpdateItem(Inventory inventory)
+        {
+            try
+            {
+                Console.Write("ENTER ITEM ID TO UPDATE: ");
+                if (!int.TryParse(Console.ReadLine(), out int id))
+                {
+                    throw new FormatException("Invalid ID format.");
+                }
+
+                Console.WriteLine("Select what you want to update:");
+                Console.WriteLine("1-> NAME");
+                Console.WriteLine("2-> PRICE");
+                Console.WriteLine("3-> QUANTITY");
+                Console.WriteLine("4-> ALL");
+                Console.Write("SELECT AN OPTION: ");
+                string option = Console.ReadLine();
+
+                string name = null;
+                double? price = null;
+                int? quantity = null;
+
+                switch (option)
+                {
+                    case "1":
+                        Console.Write("ENTER NEW ITEM NAME: ");
+                        name = Console.ReadLine();
+                        break;
+                    case "2":
+                        Console.Write("ENTER NEW ITEM PRICE: ");
+                        if (!double.TryParse(Console.ReadLine(), out double newPrice))
+                        {
+                            throw new FormatException("Invalid price format.");
+                        }
+                        price = newPrice;
+                        break;
+                    case "3":
+                        Console.Write("ENTER NEW ITEM QUANTITY: ");
+                        if (!int.TryParse(Console.ReadLine(), out int newQuantity))
+                        {
+                            throw new FormatException("Invalid quantity format.");
+                        }
+                        quantity = newQuantity;
+                        break;
+                    case "4":
+                        Console.Write("ENTER NEW ITEM NAME: ");
+                        name = Console.ReadLine();
+                        Console.Write("ENTER NEW ITEM PRICE: ");
+                        if (!double.TryParse(Console.ReadLine(), out double allPrice))
+                        {
+                            throw new FormatException("Invalid price format.");
+                        }
+                        price = allPrice;
+                        Console.Write("ENTER NEW ITEM QUANTITY: ");
+                        if (!int.TryParse(Console.ReadLine(), out int allQuantity))
+                        {
+                            throw new FormatException("Invalid quantity format.");
+                        }
+                        quantity = allQuantity;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option.");
+                        return;
+                }
+
+                inventory.UpdateItem(id, name, price, quantity);
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+        }
+
+        static void DeleteItem(Inventory inventory)
+        {
+            try
+            {
+                Console.Write("ENTER ITEM ID TO DELETE: ");
+                if (!int.TryParse(Console.ReadLine(), out int id))
+                {
+                    throw new FormatException("Invalid ID format.");
+                }
+
+                inventory.DeleteItem(id);
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+        }
+    }
+}
