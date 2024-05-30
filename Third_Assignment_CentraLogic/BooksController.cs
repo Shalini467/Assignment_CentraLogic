@@ -107,40 +107,89 @@ namespace LibraryManagementSystem.Controllers
             return issuedBook;
         }
 
+        
+        // Here I am adding the Book Entity 
 
-
-        //Update book
         [HttpPost]
+        public async Task<Book> AddBookEntity(Book book)
+        {
+            BooksEntity entity = new BooksEntity();
+            entity.Title = book.Title;
+            entity.Author = book.Author;
+            entity.PublishedDate = book.PublishedDate;
+            entity.ISBN = book.ISBN;
+            entity.IsIssued = book.IsIssued;
+
+            entity.Id = Guid.NewGuid().ToString();
+            entity.UId = entity.Id;
+            entity.DocumentType = "Book";
+            entity.CreatedBy = "Shalini";
+            entity.CreatedOn = DateTime.Now;
+            entity.UpdatedBy = "Shalini";
+            entity.UpdatedOn = DateTime.Now;
+            entity.Version = 1;
+            entity.Active = true;
+            entity.Archived = false;
+
+            BooksEntity response = await container.CreateItemAsync(entity);
+
+            Book responseBook = new Book();
+            responseBook.Title = response.Title;
+            responseBook.Author = response.Author;
+            responseBook.PublishedDate = response.PublishedDate;
+            responseBook.ISBN = response.ISBN;
+            responseBook.IsIssued = response.IsIssued;
+            return responseBook;
+        }
+
+
+
+
+        //Update the Book
+
+        [HttpPost]
+
         public async Task<Book> UpdateBook(Book book)
         {
-            // Retrieve the existing book from Cosmos DB
-            var existingBookResponse = await container.ReadItemAsync<Book>(book.UId, new PartitionKey(book.UId));
-            if (existingBookResponse.StatusCode == HttpStatusCode.NotFound)
+
+            var existingBook = container.GetItemLinqQueryable<BooksEntity>(true).Where(q => q.UId == book.UId && q.Active == true && q.Archived == false).FirstOrDefault();
+
+            if (existingBook == null)
             {
-                throw new InvalidOperationException("Book not found.");
+                throw new InvalidOperationException("Book is not found or it is already archived.");
             }
+            existingBook.Archived = true;
+            existingBook.Active = false;
+            await container.ReplaceItemAsync(existingBook, existingBook.Id);
 
-            var existingBook = existingBookResponse.Resource;
 
-            // Update the properties of the existing book
+            existingBook.Id = Guid.NewGuid().ToString();
+            existingBook.UpdatedBy = "Shalini";
+            existingBook.UpdatedOn = DateTime.Now;
+            existingBook.Version = existingBook.Version + 1;
+            existingBook.Active = true;
+            existingBook.Archived = false;
+
+
+
             existingBook.Title = book.Title;
             existingBook.Author = book.Author;
             existingBook.PublishedDate = book.PublishedDate;
             existingBook.ISBN = book.ISBN;
             existingBook.IsIssued = book.IsIssued;
+            existingBook = await container.CreateItemAsync(existingBook);
 
-            // Replace the existing book in Cosmos DB
-            var updatedBookResponse = await container.ReplaceItemAsync(existingBook, existingBook.UId, new PartitionKey(existingBook.UId));
 
-            // If the update was successful, return the updated book
-            if (updatedBookResponse.StatusCode == HttpStatusCode.OK)
-            {
-                return updatedBookResponse.Resource;
-            }
-            else
-            {
-                throw new Exception("Failed to update the book.");
-            }
+            Book responce = new Book();
+            responce.UId = existingBook.UId;
+            responce.Title = existingBook.Title;
+            responce.Author = existingBook.Author;
+            responce.PublishedDate = existingBook.PublishedDate;
+            responce.ISBN = existingBook.ISBN;
+            responce.IsIssued = existingBook.IsIssued;
+            return responce;
+
+
         }
 
 
