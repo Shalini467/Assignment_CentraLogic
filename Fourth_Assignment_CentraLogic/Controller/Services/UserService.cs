@@ -9,13 +9,26 @@ namespace VisitorSecurityClearanceSystem.Services
 
         
         
-            private readonly Container _container;
+           public readonly Container _container;
+        private Container GetContainer()
+        {
+            string URI = Environment.GetEnvironmentVariable("URI");
+            string PrimaryKey = Environment.GetEnvironmentVariable("PrimaryKey");
+            string DatabaseName = Environment.GetEnvironmentVariable("DatabaseName");
+            string ContainerName = Environment.GetEnvironmentVariable("ContainerName");
+            CosmosClient cosmosclient = new CosmosClient(URI, PrimaryKey);
 
-            public UserService(CosmosDbService cosmosDbService)
-            {
-                _container = cosmosDbService.GetContainer();
-            }
+            Database database = cosmosclient.GetDatabase(DatabaseName);
 
+            Container container = database.GetContainer(ContainerName);
+
+            return container;
+        }
+        public UserService()
+        {
+            _container = GetContainer();
+
+        }
             public async Task<User> UserRegister(User user)
             {
                 user.Id = Guid.NewGuid().ToString();
