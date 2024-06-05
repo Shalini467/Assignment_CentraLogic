@@ -11,15 +11,31 @@ namespace VisitorSecurityClearanceSystem.Controllers
     [ApiController]
     public class UserController : Controller
     {
+public readonly Container _container;
+        public IUserInterface _userInterface;
 
-        private readonly Container _container;
-        private readonly IUserInterface _userInterface;
-
-        public UserController(CosmosDbService cosmosDbService, IUserInterface userInterface)
+        private Container GetContainer()
         {
-            _container = cosmosDbService.GetContainer();
-            _userInterface = userInterface;
+            string URI = Environment.GetEnvironmentVariable("URI");
+            string PrimaryKey = Environment.GetEnvironmentVariable("PrimaryKey");
+            string DatabaseName = Environment.GetEnvironmentVariable("DatabaseName");
+            string ContainerName = Environment.GetEnvironmentVariable("ContainerName");
+            CosmosClient cosmosclient = new CosmosClient(URI, PrimaryKey);
+
+            Database databse = cosmosclient.GetDatabase(DatabaseName);
+
+            Container container = databse.GetContainer(ContainerName);
+
+            return container;
         }
+
+        public UserController(IUserInterface userInterface)
+        {
+            _container = GetContainer();
+            _userInterface = userInterface;
+
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> UserRegister(UserDTO userDTO)
