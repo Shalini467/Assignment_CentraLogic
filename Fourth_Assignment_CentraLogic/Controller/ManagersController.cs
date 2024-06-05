@@ -12,9 +12,9 @@ namespace VisitorSecurityClearanceSystem.Controllers
     public class ManagersController : Controller
     {
 
-        private readonly ISecurityService _managerService;
+        private readonly IManagerService _managerService;
 
-        public ManagersController(ISecurityService ManagerService)
+        public ManagersController(IManagerService ManagerService)
         {
             _managerService = ManagerService;
         }
