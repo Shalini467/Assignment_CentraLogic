@@ -11,9 +11,9 @@ namespace VisitorSecurityClearanceSystem.Services
     public class VisitorService : IVisitorService
     {
 
-        private readonly IOfficeCosmosDBService _visitorCosmosDBService;
+        private readonly IVisitorCosmosDBService _visitorCosmosDBService;
 
-        public VisitorService(IOfficeCosmosDBService visitorCosmosDBService)
+        public VisitorService(IVisitorCosmosDBService visitorCosmosDBService)
         {
             _visitorCosmosDBService = visitorCosmosDBService;
         }
