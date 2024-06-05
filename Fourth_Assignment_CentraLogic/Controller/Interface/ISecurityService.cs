@@ -10,6 +10,6 @@ namespace VisitorSecurityClearanceSystem.Interface
         Task<Security> GetSecurityByIdAsync(string id);
         Task<Security> CreateSecurityAsync(Security security);
         Task<Security> UpdateSecurityAsync(string id, Security security);
-        
+        Task DeleteSecurityAsync(string id);
     }
 }
