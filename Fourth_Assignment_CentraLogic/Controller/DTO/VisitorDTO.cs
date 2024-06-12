@@ -8,7 +8,7 @@ namespace VisitorSecurityClearanceSystem.DTO
         [JsonProperty(PropertyName = "id", NullValueHandling = NullValueHandling.Ignore)]
         public string Id { get; set; }
 
-        [JsonProperty(PropertyName = "Name", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "name", NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; set; }
 
         [JsonProperty(PropertyName = "email", NullValueHandling = NullValueHandling.Ignore)]
