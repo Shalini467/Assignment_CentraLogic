@@ -7,10 +7,13 @@ namespace EmployeeManagementSystem.CosmosDB
     {
         Task<EmployeeBasicDetailsEntity> AddEmployeeBasicDetails(EmployeeBasicDetailsEntity employeeBasicDetailsEntity);
 
+      
+        Task<EmployeeBasicDetailsEntity> GetEmployeeById(string id);
+      
+
         Task<EmployeeBasicDetailsEntity> UpdateEmployeeBasicDetails(string id, EmployeeBasicDetailsEntity employeeBasicDetailsEntity);
 
         Task<bool> DeleteEmployeeBasicDetails(string id);
-        Task<EmployeeBasicDetailsEntity> GetEmployeeById(string id);
 
         Task<List<EmployeeBasicDetailsEntity>> GetAllEmployees();
 
@@ -22,6 +25,8 @@ namespace EmployeeManagementSystem.CosmosDB
 
         Task<EmployeeAdditionalDetailsEntity> GetEmployeeAdditionalDetailsById(string id);
 
+        Task<EmployeeAdditionalDetailsEntity> GetEmployeeAdditionalDetailsByUId(string uId);
+
         Task<List<EmployeeAdditionalDetailsEntity>> GetAllEmployeesAdditioanlDetails();
 
         Task<List<EmployeeBasicDetailsEntity>> GetAllEmployeeByRole(string role);
@@ -29,6 +34,7 @@ namespace EmployeeManagementSystem.CosmosDB
 
         Task<EmployeeBasicFilterCriteria> GetAllEmployeeByPagination(EmployeeBasicFilterCriteria employeeBasicFilterCriteria);
 
+        Task<EmployeeAdditionalDetailsEntity> GetAdditionalDetailsByBasicDetailsUId(string employeeBasicDetailsUid);
 
     }
 
