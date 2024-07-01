@@ -62,7 +62,7 @@ namespace EmployeeManagementSystem.Entity
         public DateTime DateOfJoining { get; set; }
 
         [JsonProperty(PropertyName = "status", NullValueHandling = NullValueHandling.Ignore)]
-        public DateTime Status { get; set; }
+        public string Status { get; set; }
     }
 
     public class EmployeeBasicFilterCriteria
